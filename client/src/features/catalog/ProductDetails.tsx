@@ -1,3 +1,4 @@
+import CheckIcon from '@mui/icons-material/Check';
 import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -21,12 +22,12 @@ export default function ProductDetails() {
     if (!product) return <Typography variant='h3'>Product not found</Typography>
 
     return (
-        <Typography variant='h2'>
-            <Grid container spacing={6}>
-                <Grid item xs={6}>
+        <Typography variant='h2' sx={{ mt: 2 }}>
+            <Grid container spacing={6} sx={{ mt: 0 }}>
+                <Grid item xs={7} >
                     <img src={product.pictureUrl} alt={product.name} style={{ width: '100%' }} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5} sx={{ boxShadow: '0 0 5px #ccc', padding: '15px 20px !important' }}>
                     <Typography variant='h3'>{product.name}</Typography>
                     <Divider sx={{ mb: 2 }} />
                     <Typography variant='h4' color='secondary' >${(product.price / 100).toFixed(2)}</Typography>
@@ -34,7 +35,7 @@ export default function ProductDetails() {
                         <Table>
                             <TableBody>
                                 <TableRow>
-                                    <TableCell>Name</TableCell>
+                                    <TableCell><CheckIcon fontSize='small' sx={{ textAlign: 'center' }} />Name</TableCell>
                                     <TableCell>{product.name}</TableCell>
                                 </TableRow>
                                 <TableRow>
