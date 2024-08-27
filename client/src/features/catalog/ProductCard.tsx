@@ -1,6 +1,6 @@
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from "@mui/material";
+import { Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from 'react-router-dom';
 import { Product } from "../../app/models/product";
 import TextRating from './TextRating';
@@ -10,6 +10,9 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
+    const theme = useTheme();
+    const isLightTheme = theme.palette.mode === 'light';
+
     return (
         <Card sx={{ width: '100%' }}>
             <CardMedia
@@ -20,7 +23,7 @@ export default function ProductCard({ product }: Props) {
             <CardHeader
                 title={product.name}
                 titleTypographyProps={{
-                    sx: { fontWeight: 'bold', color: 'primary.main', fontSize: '16px' }
+                    sx: { fontWeight: 'bold', color: isLightTheme ? 'primary.main' : '#ffffff', fontSize: '16px' }
                 }}
             />
             <CardContent>

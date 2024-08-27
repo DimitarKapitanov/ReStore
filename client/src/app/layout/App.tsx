@@ -27,7 +27,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-      <Container maxWidth={"lg"}>
+      <Container sx={{ maxWidth: '1440px' }}>
         <Outlet />
       </Container>
     </ThemeProvider>
