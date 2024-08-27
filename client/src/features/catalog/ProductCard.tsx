@@ -1,7 +1,9 @@
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from "@mui/material";
+import { Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from "@mui/material";
+import { Link } from 'react-router-dom';
 import { Product } from "../../app/models/product";
+import TextRating from './TextRating';
 
 interface Props {
     product: Product;
@@ -9,36 +11,41 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
     return (
-        <Card >
-            <CardHeader
-                avatar={
-                    <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                        {product.name.charAt(0).toLocaleUpperCase()}
-                    </Avatar>
-                }
-                title={product.name}
-                titleTypographyProps={{
-                    sx: { fontWeight: 'bold', color: 'primary.main' }
-                }}
-            />
+        <Card sx={{ width: '100%' }}>
             <CardMedia
-                sx={{ height: 140, backgroundSize: 'contain', bgcolor: 'primary.light' }}
+                sx={{ height: 340, backgroundSize: 'contain', bgcolor: 'primary.light' }}
                 image={product.pictureUrl}
                 title={product.name}
             />
+            <CardHeader
+                title={product.name}
+                titleTypographyProps={{
+                    sx: { fontWeight: 'bold', color: 'primary.main', fontSize: '16px' }
+                }}
+            />
             <CardContent>
-                <Typography gutterBottom color='secondary' variant="h5">
-                    ${(product.price / 100).toFixed(2)}
-                </Typography>
+                <TextRating />
                 <Typography variant="body2" color="text.secondary">
                     {product.brand} / {product.type}
                 </Typography>
+                <Typography gutterBottom color='secondary' variant="h5">
+                    ${(product.price / 100).toFixed(2)}
+                </Typography>
             </CardContent>
             <CardActions sx={{ justifyContent: 'space-between' }}>
-                <IconButton sx={{ color: "success.light" }} aria-label="add to shopping cart">
+                <IconButton
+                    sx={{ color: "success.light" }}
+                    aria-label="add to shopping cart"
+
+                >
                     <AddShoppingCartIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'warning.light' }} aria-label="add to shopping cart">
+                <IconButton
+                    sx={{ color: 'warning.light' }}
+                    aria-label="add to shopping cart"
+                    component={Link}
+                    to={`/catalog/${product.id}`}
+                >
                     <VisibilityIcon />
                 </IconButton>
             </CardActions>
