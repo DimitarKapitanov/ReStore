@@ -26,8 +26,8 @@ const navStyles = {
     }
 };
 interface Props {
-    darkMode: boolean;
-    handleThemeChange: () => void;
+    readonly darkMode: boolean;
+    readonly handleThemeChange: () => void;
 }
 
 export default function Header({ darkMode, handleThemeChange }: Props) {

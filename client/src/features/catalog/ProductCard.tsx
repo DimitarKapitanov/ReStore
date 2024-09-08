@@ -6,7 +6,7 @@ import { Product } from "../../app/models/product";
 import TextRating from './TextRating';
 
 interface Props {
-    product: Product;
+    readonly product: Product;
 }
 
 export default function ProductCard({ product }: Props) {

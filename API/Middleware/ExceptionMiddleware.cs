@@ -21,6 +21,7 @@ namespace API.Middleware
         {
             try
             {
+                _logger.LogInformation("Executing request: {0}", context.Request.Path);
                 await _next(context);
             }
             catch (Exception ex)

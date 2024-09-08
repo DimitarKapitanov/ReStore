@@ -50,4 +50,4 @@ catch (Exception ex)
 }
 
 
-app.Run();
+await app.RunAsync();
