@@ -1,16 +1,17 @@
 import { Add as AddIcon, Delete as DeleteIcon, Remove as RemoveIcon } from '@mui/icons-material';
-import {
-    Box,
-    Button,
-    Container,
-    IconButton,
-    List,
-    ListItem,
-    ListItemText,
-    Paper,
-    TextField,
-    Typography
-} from '@mui/material';
+// import {
+//     Box,
+//     Button,
+//     Container,
+//     IconButton,
+//     List,
+//     ListItem,
+//     ListItemText,
+//     Paper,
+//     TextField,
+//     Typography
+// } from '@mui/material';
+import { Box, Button, Container, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
@@ -29,6 +30,7 @@ export default function BasketPage() {
 
     if (loading) return <LoadingComponent />;
     if (!basket) return <Typography variant='h3'>Your basket is empty</Typography>
+
     function handleRemoveProduct(id: any): void {
         throw new Error('Function not implemented.');
     }

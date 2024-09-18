@@ -1,25 +1,17 @@
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import { useState } from "react";
+// App.tsx
+import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "./Header";
+import getDesignTokens from './theme'; // Импортирайте темата
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const paletteType = darkMode ? 'dark' : 'light';
 
-  const theme = createTheme({
-    palette: {
-      mode: paletteType,
-      primary: {
-        main: '#3f51b5',
-      },
-      background: {
-        default: paletteType === 'light' ? '#f9f9f9' : '#121212b2'
-      }
-    }
-  });
+  const theme = useMemo(() => createTheme(getDesignTokens(paletteType)), [paletteType]);
 
   const handleThemeChange = () => {
     setDarkMode(!darkMode);
@@ -30,11 +22,11 @@ function App() {
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-      <Container sx={{ maxWidth: '1400px !important' }}>
+      <Container sx={{ maxWidth: '1920px !important', padding: '0 !important', mt: 4 }} >
         <Outlet />
       </Container>
     </ThemeProvider>
   )
 }
 
-export default App
+export default App;
