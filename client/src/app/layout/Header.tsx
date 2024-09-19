@@ -5,8 +5,8 @@ import InputBase from '@mui/material/InputBase';
 import { alpha, styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import logoDark from '/public/logoReStoreDark.png';
-import logoWhite from '/public/logoReStoreWhite.png';
+import logoDark from '/logoReStoreDark.png';
+import logoWhite from '/logoReStoreWhite.png';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',

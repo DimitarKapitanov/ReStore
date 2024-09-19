@@ -11,34 +11,37 @@ const getDesignTokens = (mode: 'light' | 'dark') => ({
         }
     },
     typography: {
-        fontFamily: 'Satoshi, sans-serif',
+        fontFamily: [
+            'Figtree',
+            'Satoshi',
+        ].join(','),
         h1: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '64px',
             fontWeight: 'bolder',
         },
         h2: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '48px',
             fontWeight: 'bolder',
         },
         h3: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '36px',
             fontWeight: 'bold',
         },
         h4: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '24px',
             fontWeight: 'bold',
         },
         h5: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '20px',
             fontWeight: 'bold',
         },
         h6: {
-            fontFamily: 'Integral CF, sans-serif',
+            fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '18px',
             fontWeight: 'bold',
         },

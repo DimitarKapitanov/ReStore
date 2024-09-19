@@ -4,7 +4,7 @@ export default function Head() {
     return (
         <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <div className="content">
-                <Typography variant="h1" sx={{ fontSize: 64, fontWeight: 'bold', fontFamily: 'Integral CF' }}>FIND CLOTHES THAT MATCHES YOUR STYLE</Typography>
+                <Typography variant="h1" sx={{ fontSize: 64, fontWeight: 'bold' }}>FIND CLOTHES THAT MATCHES YOUR STYLE</Typography>
                 <Typography variant="subtitle1" mt={3}>
                     Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
                 </Typography>
