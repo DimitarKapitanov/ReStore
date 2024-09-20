@@ -1,7 +1,6 @@
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { LoadingButton } from '@mui/lab';
-import { Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Card, CardActions, CardContent, CardHeader, CardMedia, Typography, useTheme } from "@mui/material";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import agent from '../../app/api/agent';
@@ -24,45 +23,43 @@ export default function ProductCard({ product }: Props) {
     }
 
     return (
-        <Card sx={{ width: '100%' }}>
+        <Card sx={{ width: '100%', borderRadius: '20px' }} >
             <CardMedia
-                sx={{ height: 340, backgroundSize: 'contain', bgcolor: 'primary.light' }}
+                sx={{ height: 298, backgroundSize: 'contain', bgcolor: 'primary.light', userSelect: 'none' }}
                 image={product.pictureUrl}
                 title={product.name}
+                component={Link}
+                to={`/catalog/${product.id}`}
             />
             <CardHeader
                 title={product.name}
                 titleTypographyProps={{
-                    sx: { fontWeight: 'bold', color: isLightTheme ? 'primary.main' : '#ffffff', fontSize: '16px' }
+                    sx: { fontWeight: 'bold', color: isLightTheme ? '#000000' : '#ffffff', fontSize: '16px' }
                 }}
+                sx={{ paddingBottom: 0 }}
             />
-            <CardContent>
+            <CardContent sx={{ paddingTop: 0, paddingBottom: 0 }}>
                 <TextRating />
                 <Typography variant="body2" color="text.secondary">
                     {product.brand} / {product.type}
                 </Typography>
-                <Typography gutterBottom color='secondary' variant="h5">
-                    ${(product.price / 100).toFixed(2)}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography gutterBottom color='secondary' variant="h5" sx={{ mb: 0 }}>
+                        ${(product.price / 100).toFixed(2)}
+                    </Typography>
+                    <CardActions sx={{ padding: 0 }}>
+                        <LoadingButton
+                            sx={{ color: "success.light", padding: 0 }}
+                            aria-label="add to shopping cart"
+                            onClick={() => handleAddToItem(product.id)}
+                            loading={loading}
+                        >
+                            <AddShoppingCartIcon />
+                        </LoadingButton>
+                    </CardActions>
+                </Box>
             </CardContent>
-            <CardActions sx={{ justifyContent: 'space-between' }}>
-                <LoadingButton
-                    sx={{ color: "success.light" }}
-                    aria-label="add to shopping cart"
-                    onClick={() => handleAddToItem(product.id)}
-                    loading={loading}
-                >
-                    <AddShoppingCartIcon />
-                </LoadingButton>
-                <IconButton
-                    sx={{ color: 'warning.light' }}
-                    aria-label="add to shopping cart"
-                    component={Link}
-                    to={`/catalog/${product.id}`}
-                >
-                    <VisibilityIcon />
-                </IconButton>
-            </CardActions>
+
         </Card>
     )
 }

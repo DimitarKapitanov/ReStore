@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from "./footer/Footer";
 import Header from "./Header";
 import getDesignTokens from './theme'; // Импортирайте темата
 
@@ -25,6 +26,7 @@ function App() {
       <Container sx={{ maxWidth: '1920px !important', padding: '0 !important', mt: 4 }} >
         <Outlet />
       </Container>
+      <Footer />
     </ThemeProvider>
   )
 }

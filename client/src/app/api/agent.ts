@@ -49,6 +49,7 @@ const requests = {
 const Catalog = {
     list: () => requests.get("/products"),
     details: (id: string) => requests.get(`/products/${id}`),
+    recentlyAddedProducts: () => requests.get("/products/recently-added"),
 };
 
 const TestError = {

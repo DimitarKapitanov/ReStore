@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
@@ -20,11 +20,13 @@ export default function Catalog() {
     if (loading) return <LoadingComponent message="Loading products..." />;
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <Filters />
-            <Box sx={{ flex: 1 }} >
-                <ProductList products={products} />
+        <Container maxWidth='xl' sx={{ mt: 10 }}>
+            <Box className="box-card">
+                <Filters />
+                <Box sx={{ flex: 1 }} >
+                    <ProductList products={products} />
+                </Box>
             </Box>
-        </Box>
+        </Container>
     )
 }

@@ -27,5 +27,14 @@ namespace API.Controllers
 
             return product;
         }
+
+        [HttpGet("recently-added")]
+        public async Task<ActionResult<List<Product>>> GetRecentlyAddedProducts()
+        {
+            return await _context.Products
+            .OrderBy(x => x.Id) // Разбърква резултатите
+            .Take(4) // Взема първите 4 продукта
+            .ToListAsync();
+        }
     }
 }
