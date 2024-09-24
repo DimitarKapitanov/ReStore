@@ -40,16 +40,17 @@ const navStyles = {
 };
 
 
-
 export default function Footer() {
     return (
         <Container className="footer">
             <Container>
-                <Box className="footer-top">
-                    <Typography variant="h3" color="text.primary">STAY UPTO DATE ABOUT OUR LATEST OFFERS</Typography>
-                    <Box className="footer-input-container">
-                        <Input type="email" placeholder="Enter your email" />
-                        <Button>Subscribe</Button>
+                <Box sx={{ position: 'relative', paddingTop: '120px', marginTop: '180px' }}>
+                    <Box className="footer-top">
+                        <Typography variant="h3" color="text.primary">STAY UPTO DATE ABOUT OUR LATEST OFFERS</Typography>
+                        <Box className="footer-input-container">
+                            <Input type="email" placeholder="Enter your email" className="input-email" />
+                            <Button>Subscribe</Button>
+                        </Box>
                     </Box>
                 </Box>
                 <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} className="footer-middle">

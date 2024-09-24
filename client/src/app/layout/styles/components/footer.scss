@@ -11,6 +11,10 @@
         border-radius: 20px;
         padding: 34px 64px;
         margin-top: 0;
+        position: absolute;
+        width: 100%;
+        top: - 80px;
+        box-shadow: 17px 23px 35px 0px rgba(0, 0, 0, 0.75);
 
         h3 {
             color: #fff;
@@ -22,14 +26,23 @@
             flex-direction: column;
             justify-content: center;
 
-            input {
-                width: 309px;
+
+
+            .input-email {
+                width: 349px;
                 height: 40px;
                 border-radius: 20px;
                 padding: 0 20px;
                 margin-right: 20px;
                 background-color: #fff;
                 margin-bottom: 20px;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 700;
+
+                &::after {
+                    border-bottom: none !important;
+                }
             }
 
             button {
@@ -41,6 +54,7 @@
                 font-weight: bold;
                 cursor: pointer;
                 font-family: inherit;
+                font-size: 14px;
             }
         }
     }
