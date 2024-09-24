@@ -1,8 +1,9 @@
+using API.Data;
+
 namespace API.Entities
 {
-    public class Basket
+    public class Basket : BaseDeletableModel<Guid>
     {
-        public Guid Id { get; set; }
         public Guid BuyerId { get; set; }
         public List<BasketItem> Items { get; set; } = new();
 
