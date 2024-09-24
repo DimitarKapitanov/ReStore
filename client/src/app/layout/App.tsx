@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import Footer from "./footer/Footer";
+import Footer from "./Footer";
 import Header from "./Header";
 import getDesignTokens from './theme'; // Импортирайте темата
 
@@ -23,7 +23,7 @@ function App() {
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-      <Container sx={{ maxWidth: '1920px !important', padding: '0 !important', mt: 4 }} >
+      <Container sx={{ maxWidth: '1920px !important', minHeight: '100vh', padding: '0 !important', mt: 4 }} >
         <Outlet />
       </Container>
       <Footer />
