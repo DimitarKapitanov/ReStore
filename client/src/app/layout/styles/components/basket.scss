@@ -1,0 +1,9 @@
+.order-summary-box {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .order-summary-box-bold {
+        font-weight: 900;
+    }
+}

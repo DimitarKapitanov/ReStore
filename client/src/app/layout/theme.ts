@@ -1,5 +1,7 @@
 // theme.ts
 
+type TextTransform = 'none' | 'capitalize' | 'uppercase' | 'lowercase';
+
 const getDesignTokens = (mode: 'light' | 'dark') => ({
     palette: {
         mode: mode,
@@ -18,32 +20,39 @@ const getDesignTokens = (mode: 'light' | 'dark') => ({
         h1: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '64px',
-            fontWeight: 'bolder',
+            fontWeight: '900',
+            textTransform: 'uppercase' as TextTransform | undefined,
         },
         h2: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '48px',
-            fontWeight: 'bolder',
+            fontWeight: '900',
+            textTransform: 'uppercase' as TextTransform | undefined,
         },
         h3: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '36px',
-            fontWeight: 'bold',
+            fontWeight: '900',
+            textTransform: 'uppercase' as TextTransform | undefined,
+
         },
         h4: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '24px',
-            fontWeight: 'bold',
+            fontWeight: '900',
+            textTransform: 'capitalize' as TextTransform | undefined
         },
         h5: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '20px',
-            fontWeight: 'bold',
+            fontWeight: '900',
+            textTransform: 'capitalize' as TextTransform | undefined
         },
         h6: {
             fontFamily: '"Figtree", "Arial Black", sans-serif',
             fontSize: '18px',
-            fontWeight: 'bold',
+            fontWeight: '900',
+            textTransform: 'capitalize' as TextTransform | undefined
         },
         subtitle1: {
             fontSize: '16px',

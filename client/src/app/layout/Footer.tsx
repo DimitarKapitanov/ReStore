@@ -48,20 +48,25 @@ export default function Footer() {
                     <Box className="footer-top">
                         <Typography variant="h3" color="text.primary">STAY UPTO DATE ABOUT OUR LATEST OFFERS</Typography>
                         <Box className="footer-input-container">
-                            <Input type="email" placeholder="Enter your email" className="input-email" />
+                            <Input type="email" placeholder="Enter your email" className="input-email" sx={{
+                                '::placeholder': {
+                                    color: 'black !important',
+                                    opacity: 1, // Ensures the color does not change
+                                },
+                            }} />
                             <Button>Subscribe</Button>
                         </Box>
                     </Box>
                 </Box>
                 <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} className="footer-middle">
                     <Grid2 size={3} className="footer-middle-item">
-                        <Typography variant="h6" color="text.primary">ReStore</Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="h6" >ReStore</Typography>
+                        <Typography variant="body2" >
                             ReStore is a leading online store for fashion and clothing. We are proud to offer a wide range of products for
                         </Typography>
                     </Grid2 >
                     <Grid2 size={2}>
-                        <Typography variant="h6" color="text.primary">Quick Links</Typography>
+                        <Typography variant="h6" >Quick Links</Typography>
                         {quickLinks.map(({ title, path }) => (
                             <ListItem
                                 component={NavLink}
@@ -74,7 +79,7 @@ export default function Footer() {
                         ))}
                     </Grid2>
                     <Grid2 size={2}>
-                        <Typography variant="h6" color="text.primary">Help</Typography>
+                        <Typography variant="h6" >Help</Typography>
                         {helpLinks.map(({ title, path }) => (
                             <ListItem
                                 component={NavLink}
@@ -88,7 +93,7 @@ export default function Footer() {
                     </Grid2>
 
                     <Grid2 size={2}>
-                        <Typography variant="h6" color="text.primary">FAQ</Typography>
+                        <Typography variant="h6" >FAQ</Typography>
                         {faqLinks.map(({ title, path }) => (
                             <ListItem
                                 component={NavLink}
@@ -101,7 +106,7 @@ export default function Footer() {
                         ))}
                     </Grid2>
                     <Grid2 size={2}>
-                        <Typography variant="h6" color="text.primary">Resources</Typography>
+                        <Typography variant="h6" >Resources</Typography>
                         {resourcesLinks.map(({ title, path }) => (
                             <ListItem
                                 component={NavLink}
@@ -116,10 +121,10 @@ export default function Footer() {
                 </Grid2>
                 <Divider />
                 <Box className="footer-bottom">
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" >
                         ReStore © 2000-2024, All rights reserved
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" className="footer-image-container">
+                    <Typography variant="body2" className="footer-image-container">
                         <img src="/images/social/facebook.png" alt="facebook" />
                         <img src="/images/social/facebook.png" alt="facebook" />
                         <img src="/images/social/facebook.png" alt="facebook" />
@@ -128,6 +133,6 @@ export default function Footer() {
                     </Typography>
                 </Box>
             </Container>
-        </Container>
+        </Container >
     )
 }

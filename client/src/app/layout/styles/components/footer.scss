@@ -13,7 +13,7 @@
         margin-top: 0;
         position: absolute;
         width: 100%;
-        top: - 80px;
+        top: - 100px;
         box-shadow: 17px 23px 35px 0px rgba(0, 0, 0, 0.75);
 
         h3 {
@@ -39,9 +39,14 @@
                 font-family: inherit;
                 font-size: 14px;
                 font-weight: 700;
+                color: #000;
 
-                &::after {
-                    border-bottom: none !important;
+                &::placeholder {
+                    color: #000 !important;
+                }
+
+                &::before {
+                    border-bottom: red !important;
                 }
             }
 
@@ -64,6 +69,12 @@
         justify-content: space-evenly;
         padding-bottom: 30px;
         padding-top: 30px;
+        color: #000;
+        margin-top: 50px;
+
+        &::placeholder {
+            color: #000 !important;
+        }
     }
 
     .footer-bottom {
@@ -71,6 +82,7 @@
         flex-direction: row;
         justify-content: space-between;
         margin-top: 30px;
+        color: #000;
 
         .footer-image-container {
             display: flex;
@@ -84,4 +96,9 @@
             }
         }
     }
+}
+
+.css-1ulrhjk-MuiInputBase-input-MuiInput-input::placeholder {
+    color: #000 !important;
+    opacity: 1 !important;
 }

@@ -1,3 +1,4 @@
+import { Delete } from '@mui/icons-material';
 import { Box, Button, Grid2, Typography } from '@mui/material';
 import { BasketItem } from "../../app/models/basket";
 
@@ -16,17 +17,29 @@ export default function BasketItemCard({ item }: Props) {
         console.log(`Decrease quantity for item with id: ${id}`);
     };
     return (
-        <Grid2 container sx={{ border: '1px solid rgba(0, 0, 0, 0.1)', borderRadius: '20px', p: 2 }} spacing={2} >
+        <Grid2 container sx={{ p: 2 }} spacing={2} >
             <Grid2 size={3} >
                 <img src={item.pictureUrl} alt={item.name} style={{ width: '100%', backgroundColor: '#ffffff', borderRadius: '9px' }} />
             </Grid2>
             <Grid2 size={9}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                    {/* Product name, brand, type and remove item button*/}
                     <Box>
-                        <Typography variant='h5'>{item.name}</Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant='h5'>{item.name}</Typography>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                sx={{ minWidth: '30px', padding: '5px', color: 'red' }}
+                                onClick={() => console.log('Remove item from basket')}
+                            >
+                                <Delete />
+                            </Button>
+                        </Box>
                         <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center' }}>Brand: <span style={{ marginLeft: 6 }}> {item.brand}</span></Typography>
                         <Typography variant='body1' sx={{ display: 'flex', alignItems: 'center' }}>Type: <span style={{ marginLeft: 6 }}>{item.type}</span></Typography>
                     </Box>
+                    {/* Price and quantity */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant='body1'>${(item.price / 100).toFixed(2)}</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
