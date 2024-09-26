@@ -68,8 +68,9 @@ const getDesignTokens = (mode: 'light' | 'dark') => ({
         button: {
             fontFamily: 'Satoshi, sans-serif',
             fontSize: '16px',
-            fontWeight: 'lighter',
+            fontWeight: '700',
             color: mode === 'light' ? '#000000' : '#ffffff',
+            textTransform: 'capitalize' as TextTransform | undefined,
         },
     },
 });

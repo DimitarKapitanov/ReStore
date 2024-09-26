@@ -43,8 +43,6 @@ export default function BasketPage() {
                 <Grid2 size={5}>
                     <OrderSummary items={basket.items} />
                 </Grid2>
-
-
             </Grid2>
         </Container>
     );
