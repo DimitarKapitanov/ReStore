@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -10,13 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class BasketController : BaseApiController
+    public class BasketController(StoreContext storeContext) : BaseApiController
     {
-        public StoreContext _context { get; }
-        public BasketController(StoreContext storeContext)
-        {
-            _context = storeContext;
-        }
+        public StoreContext _context { get; } = storeContext;
 
         [HttpGet(Name = "GetBasket")]
         public async Task<ActionResult<BasketDto>> GetBasket()
@@ -31,19 +23,12 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<BasketDto>> AddItemToBasket(Guid productId, int quantity)
         {
-            //get basket
-            var basket = await RetrieveBasket();
-            // if no basket create one
-            if (basket == null) basket = CreateBasket();
-
-            //get product
+            var basket = await RetrieveBasket() ?? CreateBasket();
             var product = await _context.Products.FindAsync(productId);
             if (product == null) return NotFound();
 
-            //add product to basket
             basket.AddItem(product, quantity);
 
-            //save changes
             var result = await _context.SaveChangesAsync() > 0;
 
             if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
@@ -55,18 +40,28 @@ namespace API.Controllers
             });
         }
 
+        [HttpPut]
+        public async Task<ActionResult<BasketDto>> UpdateItem(Guid productId, int quantity)
+        {
+            var basket = await RetrieveBasket();
+            if (basket == null) return NotFound();
 
+            basket.UpdateItem(productId, quantity);
+
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (result) return Ok(MapBasketToDto(basket));
+            return BadRequest(new ProblemDetails { Title = "Problem updating item in the basket" });
+        }
 
         [HttpDelete]
         public async Task<ActionResult> RemoveItemFromBasket(Guid productId, int quantity)
         {
-            //get basket
             var basket = await RetrieveBasket();
             if (basket == null) return NotFound();
 
             basket.RemoveItem(productId, quantity);
 
-            //save changes
             var result = await _context.SaveChangesAsync() > 0;
 
             if (result) return Ok();
@@ -101,7 +96,7 @@ namespace API.Controllers
         }
 
 
-        private BasketDto MapBasketToDto(Basket basket)
+        private static BasketDto MapBasketToDto(Basket basket)
         {
             return new BasketDto
             {

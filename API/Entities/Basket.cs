@@ -33,5 +33,15 @@ namespace API.Entities
             item.Quantity -= quantity;
             if (item.Quantity == 0) Items.Remove(item);
         }
+
+
+        public void UpdateItem(Guid productId, int quantity)
+        {
+            var item = Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item != null)
+            {
+                item.Quantity = quantity;
+            }
+        }
     }
 }

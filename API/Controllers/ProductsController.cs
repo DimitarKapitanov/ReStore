@@ -32,8 +32,8 @@ namespace API.Controllers
         public async Task<ActionResult<List<Product>>> GetRecentlyAddedProducts()
         {
             return await _context.Products
-            .OrderBy(x => x.Id) // Разбърква резултатите
-            .Take(4) // Взема първите 4 продукта
+            .OrderBy(x => x.Id)
+            .Take(4)
             .ToListAsync();
         }
     }

@@ -1,0 +1,3 @@
+{
+  "csharp.attachProcessCommand": "tasklist /FO CSV /NH"
+}
