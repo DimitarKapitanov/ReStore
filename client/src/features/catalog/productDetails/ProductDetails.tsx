@@ -1,6 +1,7 @@
 import { Container, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import agent from "../../../app/api/agent";
 import NotFound from "../../../app/errors/NotFound";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
@@ -12,8 +13,12 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingStates, setLoadingStates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [tabValue, setTabValue] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -35,13 +40,20 @@ export default function ProductDetails() {
   };
 
   const handleAddToItem = async (productId: string) => {
-    setLoading(true);
+    setLoadingStates((prevState) => ({ ...prevState, [productId]: true }));
     try {
-      await agent.Basket.addItem(productId);
+      await agent.Basket.addItem(productId, quantity).finally(() =>
+        setLoadingStates((prevState) => ({
+          ...prevState,
+          [productId]: false,
+        }))
+      );
+      toast.success("Item added to basket");
+      setTimeout(() => {
+        navigate("/basket");
+      }, 3000);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -81,6 +93,7 @@ export default function ProductDetails() {
             quantity={quantity}
             onQuantityChange={handleQuantityChange}
             onAddToCart={handleAddToItem}
+            loading={loadingStates[product.id]}
           />
         </Grid>
       </Grid>

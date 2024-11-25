@@ -9,28 +9,29 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { BasketItem } from "../../app/models/basket";
+import { useStoreContext } from "../../app/context/StoreContext";
 
-interface Props {
-  items: BasketItem[];
-}
-
-export default function OrderSummary({ items }: Props) {
+export default function OrderSummary() {
+  const { basket } = useStoreContext();
   const [deliveryPrice, setDeliveryPrice] = useState(35);
 
   const calculateTotal = useCallback(() => {
-    return items.reduce(
+    if (!basket?.items) return 0;
+
+    return basket?.items.reduce(
       (total, item) => total + (item.price / 100) * item.quantity,
       0
     );
-  }, [items]);
+  }, [basket?.items]);
 
   useEffect(() => {
-    setDeliveryPrice(calculateTotal() > 500 ? 0 : 35);
-  }, [items, calculateTotal]);
+    if (!basket?.items) return;
+    setDeliveryPrice((calculateTotal() ?? 0) > 500 ? 0 : 35);
+  }, [basket?.items, calculateTotal]);
 
   const finalTotal = () => {
     const subtotal = calculateTotal();
+    if (subtotal === undefined) return 0;
     const discount = subtotal > 500 ? subtotal * 0.2 : 0;
     return subtotal - discount + deliveryPrice;
   };

@@ -1,5 +1,6 @@
+import { ShoppingCart } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +19,7 @@ interface Props {
     value: number | undefined
   ) => void;
   onAddToCart: (productId: string) => void;
+  loading: boolean;
 }
 
 export default function ProductDetails({
@@ -25,6 +27,7 @@ export default function ProductDetails({
   quantity,
   onQuantityChange,
   onAddToCart,
+  loading,
 }: Props) {
   return (
     <TableContainer>
@@ -55,13 +58,15 @@ export default function ProductDetails({
               <NumberInput value={quantity} onChange={onQuantityChange} />
             </TableCell>
             <TableCell align="center">
-              <Button
+              <LoadingButton
                 variant="contained"
                 color="secondary"
                 onClick={() => onAddToCart(product.id)}
+                loading={loading}
               >
+                <ShoppingCart />
                 Add to cart
-              </Button>
+              </LoadingButton>
             </TableCell>
           </TableRow>
           <TableRow>

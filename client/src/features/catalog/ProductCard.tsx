@@ -13,7 +13,9 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import agent from "../../app/api/agent";
+import { useStoreContext } from "../../app/context/StoreContext";
 import { Product } from "../../app/models/product";
+import { currencyFormat } from "../../app/util/util";
 import TextRating from "./TextRating";
 
 interface Props {
@@ -24,10 +26,12 @@ export default function ProductCard({ product }: Props) {
   const theme = useTheme();
   const isLightTheme = theme.palette.mode === "light";
   const [loading, setLoading] = useState(false);
+  const { setBasket } = useStoreContext();
 
   function handleAddToItem(productId: string) {
     setLoading(true);
     agent.Basket.addItem(productId)
+      .then((basket) => setBasket(basket))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }
@@ -69,7 +73,7 @@ export default function ProductCard({ product }: Props) {
             variant="h5"
             sx={{ mb: 0 }}
           >
-            ${(product.price / 100).toFixed(2)}
+            {currencyFormat(product.price)}
           </Typography>
           <CardActions sx={{ padding: 0 }}>
             <LoadingButton

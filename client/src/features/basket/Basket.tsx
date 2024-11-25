@@ -1,78 +1,57 @@
-import { Container, Divider, Grid2, Typography } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
-import agent from "../../app/api/agent";
-import LoadingComponent from "../../app/layout/LoadingComponent";
-import { Basket } from "../../app/models/basket";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid2,
+  Link,
+  Typography,
+} from "@mui/material";
+import { Fragment } from "react";
+import { useStoreContext } from "../../app/context/StoreContext";
 import BasketItemCard from "./BasketItemCard";
 import OrderSummary from "./OrderSummary";
-
 export default function BasketPage() {
-  const [loading, setLoading] = useState(true);
-  const [basket, setBasket] = useState<Basket | null>(null);
-  const [loadingStates, setLoadingStates] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const { basket } = useStoreContext();
 
-  useEffect(() => {
-    agent.Basket.get()
-      .then((response) => {
-        console.log("Basket response --> ", response);
-        setBasket(response);
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    agent.Basket.updateItem(productId, quantity)
-      .then(() => {
-        setBasket((prevBasket) => {
-          if (!prevBasket) return null;
-          const updatedItems = prevBasket.items.map((item) =>
-            item.productId === productId ? { ...item, quantity } : item
-          );
-          return { ...prevBasket, items: updatedItems };
-        });
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const handleRemoveItem = async (productId: string, quantity: number) => {
-    try {
-      setLoadingStates((prevState) => ({ ...prevState, [productId]: true }));
-
-      await agent.Basket.removeItem(productId, quantity)
-        .then((response) => {
-          if (response === 200) {
-            //remove item from basket
-            const newBasket = basket!.items.filter(
-              (item) => item.productId !== productId
-            );
-            if (basket) setBasket({ ...basket, items: newBasket });
-          }
-        })
-        .catch((error) => console.log(error))
-        .finally(() =>
-          setLoadingStates((prevState) => ({
-            ...prevState,
-            [productId]: false,
-          }))
-        );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if (loading) return <LoadingComponent />;
   if (!basket || basket?.items.length === 0)
-    return <Typography variant="h3">Your basket is empty</Typography>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          mt: 10,
+          flexDirection: "column",
+          alignItems: "center",
+          position: "relative",
+        }}
+      >
+        <Typography variant="h3">Your basket is empty!</Typography>
+        <Typography variant="h5" sx={{ mt: 2 }}>
+          Go back to the catalog and start adding items to your basket!
+        </Typography>
+        {/* back to catalog button */}
+        <Button
+          color="secondary"
+          sx={{ mt: 5 }}
+          component={Link}
+          href="/catalog"
+          variant="contained"
+        >
+          Back to catalog
+        </Button>
+      </Box>
+    );
 
   return (
     <Container sx={{ pt: 9 }}>
       <Typography variant="h3" sx={{ mb: 4 }}>
         Your basket
       </Typography>
-      <Grid2 container spacing={6} sx={{ mt: 0 }}>
+      <Grid2
+        container
+        spacing={6}
+        sx={{ mt: 0, minHeight: "100vh", alignItems: "flex-start" }}
+      >
         <Grid2
           size={7}
           sx={{
@@ -84,19 +63,13 @@ export default function BasketPage() {
         >
           {basket.items.map((item, index) => (
             <Fragment key={item.pictureUrl}>
-              <BasketItemCard
-                key={item.productId}
-                item={item}
-                onQuantityChange={handleQuantityChange}
-                onRemove={handleRemoveItem}
-                loading={loadingStates[item.productId] || false}
-              />
+              <BasketItemCard key={item.productId} item={item} />
               {index < basket.items.length - 1 && <Divider />}
             </Fragment>
           ))}
         </Grid2>
-        <Grid2 size={5}>
-          <OrderSummary items={basket?.items || []} />
+        <Grid2 size={5} sx={{ position: "sticky", top: 120 }}>
+          <OrderSummary />
         </Grid2>
       </Grid2>
     </Container>
