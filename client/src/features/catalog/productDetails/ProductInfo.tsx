@@ -8,27 +8,59 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import agent from "../../../app/api/agent";
+import { useStoreContext } from "../../../app/context/StoreContext";
 import NumberInput from "../../../app/layout/CustomNumberInput";
 import { Product } from "../../../app/models/product";
 
 interface Props {
   product: Product;
   quantity: number;
-  onQuantityChange: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: number | undefined
-  ) => void;
-  onAddToCart: (productId: string) => void;
-  loading: boolean;
+  setQuantity: (quantity: number) => void;
 }
 
 export default function ProductDetails({
   product,
   quantity,
-  onQuantityChange,
-  onAddToCart,
-  loading,
+  setQuantity,
 }: Props) {
+  const { basket, setBasket } = useStoreContext();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const items = basket?.items.find((x) => x.productId === product?.id);
+
+  const onQuantityChange = (
+    _: React.ChangeEvent<HTMLInputElement>,
+    newValue: number | undefined
+  ) => {
+    if (newValue !== undefined) {
+      console.log(newValue);
+
+      setQuantity(newValue);
+    }
+  };
+
+  const handleAddToItem = async (productId: string) => {
+    setLoading(true);
+    await agent.Basket.addItem(productId, quantity)
+      .then((basket) => setBasket(basket))
+      .catch((error) => {
+        toast.error("Problem adding item to cart");
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        toast.success("Item added to cart");
+        setTimeout(() => {
+          navigate("/basket");
+        }, 500);
+      });
+  };
+
   return (
     <TableContainer>
       <Table>
@@ -61,11 +93,11 @@ export default function ProductDetails({
               <LoadingButton
                 variant="contained"
                 color="secondary"
-                onClick={() => onAddToCart(product.id)}
+                onClick={() => handleAddToItem(product.id)}
                 loading={loading}
               >
                 <ShoppingCart />
-                Add to cart
+                {items ? "Update" : "Add to Cart"}
               </LoadingButton>
             </TableCell>
           </TableRow>
