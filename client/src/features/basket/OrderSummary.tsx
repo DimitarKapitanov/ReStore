@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useStoreContext } from "../../app/context/StoreContext";
 
 export default function OrderSummary() {
@@ -98,6 +99,8 @@ export default function OrderSummary() {
         </Button>
       </Box>
       <Button
+        component={Link}
+        to="/checkout"
         className="checkout-button"
         variant="contained"
         sx={{ width: "100%", mt: 2, mb: "20px" }}

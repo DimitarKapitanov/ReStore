@@ -8,7 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import agent from "../../../app/api/agent";
@@ -27,38 +27,55 @@ export default function ProductDetails({
   quantity,
   setQuantity,
 }: Props) {
-  const { basket, setBasket } = useStoreContext();
+  const { basket, setBasket, removeItem } = useStoreContext();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const items = basket?.items.find((x) => x.productId === product?.id);
+  const item = basket?.items.find((x) => x.productId === product?.id);
 
   const onQuantityChange = (
-    _: React.ChangeEvent<HTMLInputElement>,
+    _: ChangeEvent<HTMLInputElement>,
     newValue: number | undefined
   ) => {
     if (newValue !== undefined) {
-      console.log(newValue);
-
       setQuantity(newValue);
     }
   };
 
   const handleAddToItem = async (productId: string) => {
     setLoading(true);
-    await agent.Basket.addItem(productId, quantity)
-      .then((basket) => setBasket(basket))
-      .catch((error) => {
-        toast.error("Problem adding item to cart");
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        toast.success("Item added to cart");
-        setTimeout(() => {
-          navigate("/basket");
-        }, 500);
-      });
+    if (!item || quantity > item.quantity) {
+      const updatedQuantity = item ? quantity - item.quantity : quantity;
+
+      await agent.Basket.addItem(productId, updatedQuantity)
+        .then((basket) => setBasket(basket))
+        .catch((error) => {
+          toast.error("Problem adding item to cart");
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          toast.success("Item added to cart");
+          setTimeout(() => {
+            navigate("/basket");
+          }, 500);
+        });
+    } else {
+      const updatedQuantity = item.quantity - quantity;
+      await agent.Basket.removeItem(productId, updatedQuantity)
+        .then(() => removeItem(productId, updatedQuantity))
+        .catch((error) => {
+          toast.error("Problem adding item to cart");
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          toast.success("Item added to cart");
+          setTimeout(() => {
+            navigate("/basket");
+          }, 500);
+        });
+    }
   };
 
   return (
@@ -91,13 +108,16 @@ export default function ProductDetails({
             </TableCell>
             <TableCell align="center">
               <LoadingButton
+                disabled={
+                  item?.quantity === quantity || (!item && quantity === 0)
+                }
                 variant="contained"
                 color="secondary"
                 onClick={() => handleAddToItem(product.id)}
                 loading={loading}
               >
                 <ShoppingCart />
-                {items ? "Update" : "Add to Cart"}
+                {item ? "Update" : "Add to Cart"}
               </LoadingButton>
             </TableCell>
           </TableRow>
