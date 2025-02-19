@@ -1,32 +1,33 @@
 import { Box, Container } from "@mui/material";
-import { useEffect, useState } from "react";
-import agent from "../../app/api/agent";
+import { useEffect } from "react";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { Product } from "../../app/models/product";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureSore";
 import Filters from "./Filters";
 import ProductList from "./ProductList";
+import { fetchProductsAsync, productSelectors } from "./catalogSlice";
 
 export default function Catalog() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
+  const products = useAppSelector(productSelectors.selectAll);
+  const { productLoaded, status } = useAppSelector((state) => state.catalog);
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        agent.Catalog.list()
-            .then(response => setProducts(response))
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false));
-    }, []);
+  useEffect(() => {
+    if (!productLoaded) {
+      dispatch(fetchProductsAsync());
+    }
+  }, [productLoaded, dispatch]);
 
-    if (loading) return <LoadingComponent message="Loading products..." />;
+  if (status.includes("pending"))
+    return <LoadingComponent message="Loading products..." />;
 
-    return (
-        <Container maxWidth='xl' sx={{ mt: 10 }}>
-            <Box className="box-card">
-                <Filters />
-                <Box sx={{ flex: 1 }} >
-                    <ProductList products={products} />
-                </Box>
-            </Box>
-        </Container>
-    )
+  return (
+    <Container maxWidth="xl" sx={{ mt: 10 }}>
+      <Box className="box-card">
+        <Filters />
+        <Box sx={{ flex: 1 }}>
+          <ProductList products={products} />
+        </Box>
+      </Box>
+    </Container>
+  );
 }

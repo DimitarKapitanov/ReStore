@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useStoreContext } from "../../app/context/StoreContext";
+import { useAppSelector } from "../../app/store/configureSore";
 
 export default function OrderSummary() {
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
   const [deliveryPrice, setDeliveryPrice] = useState(35);
+
+  const [discountPrice, _] = useState<number>(499);
 
   const calculateTotal = useCallback(() => {
     if (!basket?.items) return 0;
@@ -27,15 +29,15 @@ export default function OrderSummary() {
 
   useEffect(() => {
     if (!basket?.items) return;
-    setDeliveryPrice((calculateTotal() ?? 0) > 500 ? 0 : 35);
-  }, [basket?.items, calculateTotal]);
+    setDeliveryPrice((calculateTotal() ?? 0) > discountPrice ? 0 : 35);
+  }, [basket?.items, , calculateTotal]);
 
-  const finalTotal = () => {
+  const finalTotal = useCallback(() => {
     const subtotal = calculateTotal();
     if (subtotal === undefined) return 0;
-    const discount = subtotal > 500 ? subtotal * 0.2 : 0;
+    const discount = subtotal > discountPrice ? subtotal * 0.2 : 0;
     return subtotal - discount + deliveryPrice;
-  };
+  }, [calculateTotal, deliveryPrice]);
 
   return (
     <Container className="order-summary">
@@ -48,7 +50,7 @@ export default function OrderSummary() {
           ${calculateTotal().toFixed(2)}
         </Typography>
       </Box>
-      {calculateTotal() > 500 && (
+      {calculateTotal() > discountPrice && (
         <Box className="order-summary-box">
           <Typography variant="body1">Discount (-20%)</Typography>
           <Typography

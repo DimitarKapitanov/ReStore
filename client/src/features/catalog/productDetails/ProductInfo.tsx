@@ -1,6 +1,6 @@
 import { ShoppingCart } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -8,13 +8,17 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import agent from "../../../app/api/agent";
-import { useStoreContext } from "../../../app/context/StoreContext";
+import { ChangeEvent } from "react";
 import NumberInput from "../../../app/layout/CustomNumberInput";
 import { Product } from "../../../app/models/product";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../app/store/configureSore";
+import {
+  addBasketItemAsync,
+  removeBasketItemAsync,
+} from "../../basket/basketSlice";
 
 interface Props {
   product: Product;
@@ -27,9 +31,8 @@ export default function ProductDetails({
   quantity,
   setQuantity,
 }: Props) {
-  const { basket, setBasket, removeItem } = useStoreContext();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { basket, status } = useAppSelector((state) => state.basket);
+  const dispatch = useAppDispatch();
 
   const item = basket?.items.find((x) => x.productId === product?.id);
 
@@ -42,41 +45,22 @@ export default function ProductDetails({
     }
   };
 
-  const handleAddToItem = async (productId: string) => {
-    setLoading(true);
+  async function handleAddToItem() {
     if (!item || quantity > item.quantity) {
       const updatedQuantity = item ? quantity - item.quantity : quantity;
-
-      await agent.Basket.addItem(productId, updatedQuantity)
-        .then((basket) => setBasket(basket))
-        .catch((error) => {
-          toast.error("Problem adding item to cart");
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-          toast.success("Item added to cart");
-          setTimeout(() => {
-            navigate("/basket");
-          }, 500);
-        });
+      dispatch(
+        addBasketItemAsync({ productId: product.id, quantity: updatedQuantity })
+      );
     } else {
       const updatedQuantity = item.quantity - quantity;
-      await agent.Basket.removeItem(productId, updatedQuantity)
-        .then(() => removeItem(productId, updatedQuantity))
-        .catch((error) => {
-          toast.error("Problem adding item to cart");
-          console.log(error);
+      dispatch(
+        removeBasketItemAsync({
+          productId: product.id,
+          quantity: updatedQuantity,
         })
-        .finally(() => {
-          setLoading(false);
-          toast.success("Item added to cart");
-          setTimeout(() => {
-            navigate("/basket");
-          }, 500);
-        });
+      );
     }
-  };
+  }
 
   return (
     <TableContainer>
@@ -107,18 +91,18 @@ export default function ProductDetails({
               <NumberInput value={quantity} onChange={onQuantityChange} />
             </TableCell>
             <TableCell align="center">
-              <LoadingButton
+              <Button
                 disabled={
                   item?.quantity === quantity || (!item && quantity === 0)
                 }
                 variant="contained"
                 color="secondary"
-                onClick={() => handleAddToItem(product.id)}
-                loading={loading}
+                onClick={handleAddToItem}
+                loading={status.includes("pending")}
               >
                 <ShoppingCart />
                 {item ? "Update" : "Add to Cart"}
-              </LoadingButton>
+              </Button>
             </TableCell>
           </TableRow>
           <TableRow>

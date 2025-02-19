@@ -18,6 +18,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
+
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)

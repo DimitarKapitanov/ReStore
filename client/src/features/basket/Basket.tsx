@@ -8,11 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Fragment } from "react";
-import { useStoreContext } from "../../app/context/StoreContext";
+import { useAppSelector } from "../../app/store/configureSore";
 import BasketItemCard from "./BasketItemCard";
 import OrderSummary from "./OrderSummary";
 export default function BasketPage() {
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
 
   if (!basket || basket?.items.length === 0)
     return (

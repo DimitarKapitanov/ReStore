@@ -1,7 +1,7 @@
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -10,12 +10,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import agent from "../../app/api/agent";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { Product } from "../../app/models/product";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureSore";
 import { currencyFormat } from "../../app/util/util";
+import { addBasketItemAsync } from "../basket/basketSlice";
 import TextRating from "./TextRating";
 
 interface Props {
@@ -25,16 +24,8 @@ interface Props {
 export default function ProductCard({ product }: Props) {
   const theme = useTheme();
   const isLightTheme = theme.palette.mode === "light";
-  const [loading, setLoading] = useState(false);
-  const { setBasket } = useStoreContext();
-
-  function handleAddToItem(productId: string) {
-    setLoading(true);
-    agent.Basket.addItem(productId)
-      .then((basket) => setBasket(basket))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }
+  const { status } = useAppSelector((state) => state.basket);
+  const dispatch = useAppDispatch();
 
   return (
     <Card sx={{ width: "100%", borderRadius: "20px" }}>
@@ -76,14 +67,16 @@ export default function ProductCard({ product }: Props) {
             {currencyFormat(product.price)}
           </Typography>
           <CardActions sx={{ padding: 0 }}>
-            <LoadingButton
+            <Button
               sx={{ color: "success.light", padding: 0 }}
               aria-label="add to shopping cart"
-              onClick={() => handleAddToItem(product.id)}
-              loading={loading}
+              onClick={() =>
+                dispatch(addBasketItemAsync({ productId: product.id }))
+              }
+              loading={status === "pendingAddItem" + product.id}
             >
               <AddShoppingCartIcon />
-            </LoadingButton>
+            </Button>
           </CardActions>
         </Box>
       </CardContent>

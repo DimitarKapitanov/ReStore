@@ -1,49 +1,43 @@
 import { Container, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import agent from "../../../app/api/agent";
-import { useStoreContext } from "../../../app/context/StoreContext";
 import NotFound from "../../../app/errors/NotFound";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
-import { Product } from "../../../app/models/product";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../app/store/configureSore";
+import { fetchProductAsync, productSelectors } from "../catalogSlice";
 import ProductInfo from "./ProductInfo";
 import TabsPanel from "./TabPanel";
 
 export default function ProductDetails() {
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
+  const { status: productStatus } = useAppSelector((state) => state.catalog);
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const product = useAppSelector((state) =>
+    productSelectors.selectById(state, id!)
+  );
+
   const [tabValue, setTabValue] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   const items = basket?.items.find((x) => x.productId === product?.id);
 
   useEffect(() => {
-    const loadProduct = async () => {
-      if (items) {
-        setQuantity(items.quantity);
-      }
-      await agent.Catalog.details(id!)
-        .then((product) => {
-          setProduct(product);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-
-    loadProduct();
-  }, [id, items]);
+    if (items) {
+      setQuantity(items.quantity);
+    }
+    if (!product && id) dispatch(fetchProductAsync(id));
+  }, [id, items, product, dispatch]);
 
   const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  if (loading) return <LoadingComponent message="Loading product..." />;
+  if (productStatus.includes("pending"))
+    return <LoadingComponent message="Loading product..." />;
   if (!product) return <NotFound />;
 
   return (

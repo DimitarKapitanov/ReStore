@@ -1,13 +1,10 @@
 import { Delete } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
-import { Box, Grid2, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Grid2, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import agent from "../../app/api/agent";
-import { useStoreContext } from "../../app/context/StoreContext";
 import CustomNumberInput from "../../app/layout/CustomNumberInput";
 import { BasketItem } from "../../app/models/basket";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureSore";
+import { removeBasketItemAsync, updateBasketItemAsync } from "./basketSlice";
 
 interface Props {
   item: BasketItem;
@@ -15,38 +12,23 @@ interface Props {
 
 export default function BasketItemCard({ item }: Props) {
   const navigate = useNavigate();
-  const { setBasket, removeItem } = useStoreContext();
-  const [loading, setLoading] = useState(false);
+  const { status } = useAppSelector((state) => state.basket);
+  const dispatch = useAppDispatch();
+
   const handleQuantityChange = (
     _event: React.ChangeEvent<HTMLInputElement>,
     newValue: number | undefined
   ) => {
     if (newValue) {
-      agent.Basket.updateItem(item.productId, newValue)
-        .then((basket) => {
-          setBasket(basket);
-          toast.success("Quantity updated successfully");
+      dispatch(
+        updateBasketItemAsync({
+          productId: item.productId,
+          quantity: newValue,
         })
-        .catch((error) => {
-          console.log(error);
-          toast.error("An error occurred while updating the quantity");
-        });
+      );
     }
   };
 
-  function handleRemoveItem(productId: string, quantity: number) {
-    setLoading(true);
-    agent.Basket.removeItem(productId, quantity)
-      .then(() => {
-        removeItem(productId, quantity);
-        toast.success("Item removed successfully");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred while removing the item");
-      })
-      .finally(() => setLoading(false));
-  }
   return (
     <Grid2 container sx={{ p: 2 }} spacing={2}>
       <Grid2 size={3}>
@@ -74,15 +56,25 @@ export default function BasketItemCard({ item }: Props) {
           <Box>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="h5">{item.name}</Typography>
-              <LoadingButton
+              <Button
                 variant="contained"
                 size="small"
                 sx={{ minWidth: "30px", padding: "5px", color: "red" }}
-                onClick={() => handleRemoveItem(item.productId, item.quantity)}
-                loading={loading}
+                onClick={() =>
+                  dispatch(
+                    removeBasketItemAsync({
+                      productId: item.productId,
+                      quantity: item.quantity,
+                      name: "del",
+                    })
+                  )
+                }
+                loading={
+                  status === "pendingRemoveItem" + item.productId + "del"
+                }
               >
                 <Delete />
-              </LoadingButton>
+              </Button>
             </Box>
             <Typography
               variant="body1"

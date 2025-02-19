@@ -22,7 +22,7 @@ import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useStoreContext } from "../context/StoreContext";
+import { useAppSelector } from "../store/configureSore";
 import logoDark from "/logoReStoreDark.png";
 import logoWhite from "/logoReStoreWhite.png";
 
@@ -100,7 +100,7 @@ interface Props {
 export default function Header({ darkMode, handleThemeChange }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
   const itemCount = basket?.items.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

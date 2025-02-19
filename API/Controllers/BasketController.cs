@@ -25,7 +25,10 @@ namespace API.Controllers
         {
             var basket = await RetrieveBasket() ?? CreateBasket();
             var product = await _context.Products.FindAsync(productId);
-            if (product == null) return NotFound();
+            if (product == null) return BadRequest(new ProblemDetails
+            {
+                Title = "Product not found"
+            });
 
             basket.AddItem(product, quantity);
 
@@ -36,7 +39,6 @@ namespace API.Controllers
             return BadRequest(new ProblemDetails
             {
                 Title = "Failed to add item to basket",
-                Detail = "Failed to add item to basket"
             });
         }
 
