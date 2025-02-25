@@ -7,7 +7,7 @@ type Props = {
 	onChange: (items: string[]) => void;
 };
 
-export default function Filters({ items, checked, onChange }: Props) {
+export default function CheckboxButtons({ items, checked, onChange }: Props) {
 	const [checkedItems, setCheckedItems] = useState(checked || []);
 
 	function handleCheck(value: string) {

@@ -1,6 +1,5 @@
 import { Container, Grid2, Paper, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import LoadingComponent from '../../app/layout/LoadingComponent';
 import { useAppDispatch, useAppSelector } from '../../app/store/configureSore';
 import ProductList from './ProductList';
 
@@ -11,14 +10,15 @@ const sortOptions = [
 ];
 
 import AppPagination from '../../app/components/AppPagination';
+import CheckboxButtons from '../../app/components/CheckboxButtons';
 import RadioButtonGroup from '../../app/components/RadioButtonGroup';
-import { fetchFilters, fetchProductsAsync, productSelectors, setProductParams } from './catalogSlice';
-import Filters from './Filters';
+import LoadingComponent from '../../app/layout/LoadingComponent';
+import { fetchFilters, fetchProductsAsync, productSelectors, setPageNumber, setProductParams } from './catalogSlice';
 import ProductSearch from './ProductSearch';
 
 export default function Catalog() {
 	const products = useAppSelector(productSelectors.selectAll);
-	const { productLoaded, status, filtersLoaded, brands, types, productParams, metaData } = useAppSelector((state) => state.catalog);
+	const { productLoaded, filtersLoaded, brands, types, productParams, metaData } = useAppSelector((state) => state.catalog);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -33,7 +33,7 @@ export default function Catalog() {
 		}
 	}, [filtersLoaded, dispatch]);
 
-	if (status.includes('pending') || !metaData) return <LoadingComponent message="Loading products..." />;
+	if (!filtersLoaded) return <LoadingComponent message="Loading products..." />;
 
 	return (
 		<Container maxWidth="xl" sx={{ mt: 10 }}>
@@ -52,11 +52,19 @@ export default function Catalog() {
 					</Paper>
 					<Paper sx={{ p: 2, mb: 2 }}>
 						<Typography variant="h6">Brands</Typography>
-						<Filters items={brands} checked={productParams.brands} onChange={(items) => dispatch(setProductParams({ brands: items }))} />
+						<CheckboxButtons
+							items={brands}
+							checked={productParams.brands}
+							onChange={(items) => dispatch(setProductParams({ brands: items }))}
+						/>
 					</Paper>
 					<Paper sx={{ p: 2, mb: 2 }}>
 						<Typography variant="h6">Types</Typography>
-						<Filters items={types} checked={productParams.types} onChange={(items) => dispatch(setProductParams({ types: items }))} />
+						<CheckboxButtons
+							items={types}
+							checked={productParams.types}
+							onChange={(items) => dispatch(setProductParams({ types: items }))}
+						/>
 					</Paper>
 				</Grid2>
 				<Grid2 size={9} sx={{ flex: 1 }}>
@@ -66,7 +74,7 @@ export default function Catalog() {
 			<Grid2 container>
 				<Grid2 size={3}></Grid2>
 				<Grid2 size={9}>
-					<AppPagination metaData={metaData} onPageChange={(page: number) => dispatch(setProductParams({ pageNumber: page }))} />
+					{metaData && <AppPagination metaData={metaData} onPageChange={(page: number) => dispatch(setPageNumber({ pageNumber: page }))} />}
 				</Grid2>
 			</Grid2>
 		</Container>
