@@ -57,6 +57,7 @@ export const basketSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Add basket item
     builder.addCase(addBasketItemAsync.pending, (state, action) => {
       state.status = "pendingAddItem" + action.meta.arg.productId;
     });
@@ -68,6 +69,7 @@ export const basketSlice = createSlice({
       state.status = "idle";
       console.log(action.payload);
     });
+    // Remove basket item
     builder.addCase(removeBasketItemAsync.pending, (state, action) => {
       state.status =
         "pendingRemoveItem" + action.meta.arg.productId + action.meta.arg.name;
@@ -87,6 +89,7 @@ export const basketSlice = createSlice({
       state.status = "idle";
       console.log(action.payload);
     });
+    // Update basket item
     builder.addCase(updateBasketItemAsync.pending, (state, action) => {
       state.status = "pendingUpdateItem" + action.meta.arg.productId;
     });
