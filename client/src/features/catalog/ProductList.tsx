@@ -9,6 +9,7 @@ interface Props {
 }
 export default function ProductList({ products }: Props) {
 	const { productLoaded } = useAppSelector((state) => state.catalog);
+
 	return (
 		<Grid2 container spacing={4}>
 			{products.map((product) => (

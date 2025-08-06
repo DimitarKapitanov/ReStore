@@ -12,28 +12,30 @@ interface CatalogState {
 	types: string[];
 	productParams: ProductParams;
 	metaData: MetaData | null;
+	recentlyAddedProductsArray: Product[];
+	recentlyAddedProductsLoaded: boolean;
 }
 
 const productAdapter = createEntityAdapter<Product>();
 
 function getAxiosParams(productParams: ProductParams) {
 	const params = new URLSearchParams();
-	params.append('orderBy', productParams.orderBy);
-	params.append('pageNumber', productParams.pageNumber.toString());
-	params.append('pageSize', productParams.pageSize.toString());
+	params.append("orderBy", productParams.orderBy);
+	params.append("pageNumber", productParams.pageNumber.toString());
+	params.append("pageSize", productParams.pageSize.toString());
 	if (productParams.searchTerms) {
-		params.append('searchTerm', productParams.searchTerms);
+		params.append("searchTerm", productParams.searchTerms);
 	}
 	if (productParams.brands.length > 0) {
-		params.append('brand', productParams.brands.toString());
+		params.append("brand", productParams.brands.toString());
 	}
 	if (productParams.types.length > 0) {
-		params.append('type', productParams.types.toString());
+		params.append("type", productParams.types.toString());
 	}
 	return params;
 }
 
-export const fetchProductsAsync = createAsyncThunk<Product[], void, { state: RootState }>('catalog/fetchProductsAsync', async (_, thunkAPI) => {
+export const fetchProductsAsync = createAsyncThunk<Product[], void, { state: RootState }>("catalog/fetchProductsAsync", async (_, thunkAPI) => {
 	const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
 	try {
 		const response = await agent.Catalog.list(params);
@@ -44,7 +46,7 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, { state: Roo
 	}
 });
 
-export const fetchProductAsync = createAsyncThunk<Product, string>('catalog/fetchProductAsync', async (productId, thunkAPI) => {
+export const fetchProductAsync = createAsyncThunk<Product, string>("catalog/fetchProductAsync", async (productId, thunkAPI) => {
 	try {
 		return await agent.Catalog.details(productId);
 	} catch (error: any) {
@@ -52,7 +54,7 @@ export const fetchProductAsync = createAsyncThunk<Product, string>('catalog/fetc
 	}
 });
 
-export const fetchFilters = createAsyncThunk('catalog/fetchFilters', async (_, thunkAPI) => {
+export const fetchFilters = createAsyncThunk("catalog/fetchFilters", async (_, thunkAPI) => {
 	try {
 		return await agent.Catalog.fetchFilters();
 	} catch (error: any) {
@@ -60,9 +62,17 @@ export const fetchFilters = createAsyncThunk('catalog/fetchFilters', async (_, t
 	}
 });
 
+export const recentlyAddedProducts = createAsyncThunk<Product[], void>("catalog/recentlyAddedProducts", async (_, thunkAPI) => {
+	try {
+		return await agent.Catalog.recentlyAddedProducts();
+	} catch (error: any) {
+		return thunkAPI.rejectWithValue({ error: error.data });
+	}
+});
+
 function initParams(): ProductParams {
 	return {
-		orderBy: 'name',
+		orderBy: "name",
 		pageNumber: 1,
 		pageSize: 6,
 		brands: [],
@@ -71,15 +81,17 @@ function initParams(): ProductParams {
 }
 
 export const catalogSlice = createSlice({
-	name: 'catalog',
+	name: "catalog",
 	initialState: productAdapter.getInitialState<CatalogState>({
 		productLoaded: false,
 		filtersLoaded: false,
-		status: 'idle',
+		status: "idle",
 		brands: [],
 		types: [],
 		productParams: initParams(),
 		metaData: null,
+		recentlyAddedProductsArray: [],
+		recentlyAddedProductsLoaded: false,
 	}),
 	reducers: {
 		setProductParams: (state, action) => {
@@ -100,44 +112,60 @@ export const catalogSlice = createSlice({
 	extraReducers: (builder) => {
 		// Get All Products
 		builder.addCase(fetchProductsAsync.pending, (state) => {
-			state.status = 'pendingFetchProducts';
+			state.status = "pendingFetchProducts";
 		});
 		builder.addCase(fetchProductsAsync.fulfilled, (state, action) => {
 			productAdapter.setAll(state, action.payload);
-			state.status = 'idle';
+			state.status = "idle";
 			state.productLoaded = true;
 		});
 		builder.addCase(fetchProductsAsync.rejected, (state, action) => {
 			console.log(action.payload);
-			state.status = 'idle';
+			state.status = "idle";
 		});
 		// Get single product
 		builder.addCase(fetchProductAsync.pending, (state) => {
-			state.status = 'pendingFetchProduct';
+			state.status = "pendingFetchProduct";
 		});
 		builder.addCase(fetchProductAsync.fulfilled, (state, action) => {
 			productAdapter.upsertOne(state, action.payload);
-			state.status = 'idle';
+			state.status = "idle";
 		});
 		builder.addCase(fetchProductAsync.rejected, (state, action) => {
 			console.log(action);
 
-			state.status = 'idle';
+			state.status = "idle";
 		});
 
 		// Get filters
 		builder.addCase(fetchFilters.pending, (state) => {
-			state.status = 'pendingFetchFilters';
+			state.status = "pendingFetchFilters";
 		});
 		builder.addCase(fetchFilters.fulfilled, (state, action) => {
 			state.brands = action.payload.brands;
 			state.types = action.payload.types;
 			state.filtersLoaded = true;
-			state.status = 'idle';
+			state.status = "idle";
 		});
 		builder.addCase(fetchFilters.rejected, (state, action) => {
 			console.log(action.payload);
-			state.status = 'idle';
+			state.status = "idle";
+		});
+
+		// Recently added products
+		builder.addCase(recentlyAddedProducts.pending, (state) => {
+			state.status = "pendingRecentlyAddedProducts";
+		});
+		builder.addCase(recentlyAddedProducts.fulfilled, (state, action) => {
+			// Популирай recentlyAddedProductsArray вместо productAdapter
+			state.recentlyAddedProductsArray = action.payload;
+			state.status = "idle";
+			state.productLoaded = true;
+		});
+		builder.addCase(recentlyAddedProducts.rejected, (state, action) => {
+			console.log(action.payload);
+			state.status = "idle";
+			state.recentlyAddedProductsArray = []; // Reset при грешка
 		});
 	},
 });

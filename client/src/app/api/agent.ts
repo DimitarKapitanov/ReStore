@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { PaginatedResponse } from '../models/pagination';
 import { router } from '../router/Routers';
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+// const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 axios.defaults.withCredentials = true;
@@ -13,7 +13,7 @@ const responseStatus = (response: AxiosResponse) => response.status;
 
 axios.interceptors.response.use(
 	async (response) => {
-		await sleep();
+		// await sleep();
 		const pagination = response.headers['pagination'];
 		if (pagination) {
 			response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
@@ -45,7 +45,7 @@ axios.interceptors.response.use(
 			default:
 				break;
 		}
-		return Promise.reject(error.response);
+		return Promise.reject(error);
 	},
 );
 
