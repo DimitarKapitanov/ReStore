@@ -23,12 +23,12 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<BasketDto>> AddItemToBasket(Guid productId, int quantity)
         {
-            var basket = await RetrieveBasket() ?? CreateBasket();
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == productId);
             if (product == null) return BadRequest(new ProblemDetails
             {
                 Title = "Product not found"
             });
+            var basket = await RetrieveBasket() ?? CreateBasket();
 
             basket.AddItem(product, quantity);
 
@@ -73,9 +73,13 @@ namespace API.Controllers
         private async Task<Basket> RetrieveBasket()
         {
             var buyerId = Guid.TryParse(Request.Cookies["buyerId"], out var parsedBuyerId) ? parsedBuyerId : Guid.Empty;
+            
+            if (buyerId == Guid.Empty) return null; // Early return ако няма buyerId
+            
             var basket = await _context.Baskets
                     .Include(x => x.Items)
                     .ThenInclude(x => x.Product)
+                    // Премахни AsNoTracking() за write операции
                     .FirstOrDefaultAsync(x => x.BuyerId == buyerId);
 
             return basket;

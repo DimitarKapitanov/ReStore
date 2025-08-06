@@ -11,14 +11,26 @@ builder.Services.AddControllers();
 // .NET 9 OpenAPI support
 builder.Services.AddOpenApi();
 
+// Add Response Caching
+builder.Services.AddResponseCaching();
+
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // Оптимизации за .NET 9
+    opt.EnableServiceProviderCaching();
+    opt.EnableSensitiveDataLogging(false);
 });
 builder.Services.AddCors();
 
-var app = builder.Build();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
 
+var app = builder.Build();
+app.UseResponseCompression();
+app.UseResponseCaching(); // Добави Response Caching middleware
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 

@@ -12,9 +12,11 @@ namespace API.Controllers
         private readonly StoreContext _context = context;
 
         [HttpGet]
+        [ResponseCache(NoStore = true)] // Без cache за актуални данни за stock
         public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] ProductParams productParams)
         {
             var query = _context.Products
+            .AsNoTracking() // Добави за по-бърза заявка
             .Sort(productParams.OrderBy)
             .Search(productParams.SearchTerm)
             .Filter(productParams.Brand, productParams.Type)
@@ -28,6 +30,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [ResponseCache(NoStore = true)] // Без cache за индивидуални продукти
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
 
@@ -42,15 +45,22 @@ namespace API.Controllers
         }
 
         [HttpGet("recently-added")]
+        [ResponseCache(NoStore = true)] // Без cache за актуални продукти
         public async Task<ActionResult<List<Product>>> GetRecentlyAddedProducts()
         {
-            return await _context.Products
-            .OrderBy(x => x.Id)
-            .Take(4)
-            .ToListAsync();
+           var result= await _context.Products
+           .OrderBy(x => x.Id)
+           .Take(4)
+           .ToListAsync();
+           if (result == null || result.Count == 0)
+           {
+               throw new Exception("No recently added products found.");
+           }
+           return result;
         }
 
         [HttpGet("filters")]
+        [ResponseCache(Duration = 300)] // Cache за 5 минути - filters се менят рядко
         public async Task<IActionResult> GetFilters()
         {
             var brands = await _context.Products
